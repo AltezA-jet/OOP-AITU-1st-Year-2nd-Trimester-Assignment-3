@@ -4,6 +4,9 @@ public class Playlist {
     private int id;
     private String name;
     private List<SongBase> songs;
+    public int getid(){
+        return id;
+    }
 
     public Playlist(int id, String name) {
         this.id = id;
@@ -42,5 +45,15 @@ public class Playlist {
     public List<SongBase> getSongs() {
         return songs;
     }
+    public void play() {
+    if (songs.isEmpty()) {
+        System.out.println("No songs to play.");
+        return;
+    }
+    System.out.println("Playing playlist: " + name);
+    for (SongBase song : songs) {
+        System.out.println("Now playing: " + song.getName());
+    }
+}
 
 }
