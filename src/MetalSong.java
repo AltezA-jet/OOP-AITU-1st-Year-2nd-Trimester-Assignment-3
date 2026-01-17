@@ -11,7 +11,7 @@ public class MetalSong extends SongBase{
         this.isHeavy = isHeavy;
     }
     @Override
-    public void musicPlay() {
+    public void MusicPlay() {
         System.out.println("🔥 Playing a powerful Metal track: " + getName() + " by " + getArtist());
         if (hasGuitarSolo) {
             System.out.println(" Epic guitar solo incoming!");
@@ -20,9 +20,6 @@ public class MetalSong extends SongBase{
     @Override
     public String getGenreType() {
         return "Metal";
-    }
-    public boolean hasGuitarSolo() {
-        return hasGuitarSolo;
     }
     public boolean hasGuitarSolo() {
         return hasGuitarSolo;
