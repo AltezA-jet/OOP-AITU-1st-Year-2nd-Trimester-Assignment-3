@@ -1,4 +1,4 @@
-public abstract class SongBase{
+public abstract class SongBase implements Playable, Validatable{
     private int id;
     private String name;
     private String artist;
