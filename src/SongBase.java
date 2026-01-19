@@ -41,7 +41,7 @@ public abstract class SongBase implements Playable, Validatable{
     public String getArtist(){
         return artist;
     }
-    public String getalbum(){
+    public String getAlbum(){
         return album;
     }
     public String getGenre(){
