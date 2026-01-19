@@ -19,6 +19,19 @@ public abstract class SongBase implements Playable, Validatable{
     }
     public abstract void MusicPlay();
     public abstract String getGenreType();
+    @Override
+    public void play() {
+        System.out.println("▶️ Now playing: " + name + " by " + artist);
+        MusicPlay(); 
+    }
+
+    
+    @Override
+    public boolean isValid() {
+        return name != null && !name.trim().isEmpty()
+                && artist != null && !artist.trim().isEmpty()
+                && duration > 0;
+    }
     public int getId(){
         return id;
     }

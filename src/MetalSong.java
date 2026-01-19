@@ -48,4 +48,5 @@ public class MetalSong extends SongBase{
         isHeavy = heavy;
     }
     
+    
 }

@@ -1,4 +1,4 @@
-public class JazzSong extends SongBase{
+public class JazzSong extends SongBase  {
     private boolean hasImprovisation;
     private String instrumentFocus;
     private String mood;
