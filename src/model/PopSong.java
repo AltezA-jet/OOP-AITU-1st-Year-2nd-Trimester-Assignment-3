@@ -1,3 +1,5 @@
+package model;
+
 public class PopSong extends SongBase{
     private boolean danceable;
     private int chartPosition;

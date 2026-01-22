@@ -1,3 +1,4 @@
+package model;
 public class JazzSong extends SongBase  {
     private boolean hasImprovisation;
     private String instrumentFocus;

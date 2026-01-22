@@ -1,3 +1,5 @@
+package model;
+
 public class MetalSong extends SongBase{
     private boolean hasGuitarSolo;
     private int bpm;
