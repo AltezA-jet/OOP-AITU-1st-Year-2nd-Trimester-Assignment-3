@@ -1,4 +1,8 @@
 package model;
+
+
+// implement val and play in model
+// all repository must be cotrolled throw service
 public class JazzSong extends SongBase  {
     private boolean hasImprovisation;
     private String instrumentFocus;
