@@ -1,7 +1,12 @@
 package repository;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+
+import model.SongBase;
+import utils.DatabaseConnection;
+
 
 public class SongRepository {
 
