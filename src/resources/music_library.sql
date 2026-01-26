@@ -108,3 +108,16 @@ SELECT 2, id FROM songs WHERE genre='Jazz';
 -- Pop Hits = playlist_id 3
 INSERT INTO playlist_songs (playlist_id, song_id)
 SELECT 3, id FROM songs WHERE genre='Pop';
+
+CREATE TABLE artists (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    country VARCHAR(100) NOT NULL
+);
+
+CREATE TABLE albums (
+    id SERIAL PRIMARY KEY,
+    title VARCHAR(100) NOT NULL,
+    release_year INT CHECK (release_year > 1900)
+);
+
