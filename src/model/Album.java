@@ -1,6 +1,6 @@
 package model;
 
-import model.Validatable;
+// import model.Validatable;
 import java.util.ArrayList;
 import java.util.List;
 

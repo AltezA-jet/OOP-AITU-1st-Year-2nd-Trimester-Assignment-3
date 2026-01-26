@@ -1,108 +1,80 @@
 package repository;
 
+import model.SongBase;
+import utils.DatabaseConnection;
+import exception.DatabaseOperationException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import model.SongBase;
-import utils.DatabaseConnection;
-
-
 public class SongRepository {
 
-    
-    public void addSong(SongBase song) {
+    public void insert(SongBase song) throws DatabaseOperationException {
         String sql = "INSERT INTO songs (name, artist, album, genre, duration, release_date) VALUES (?, ?, ?, ?, ?, ?)";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
-
             ps.setString(1, song.getName());
             ps.setString(2, song.getArtist());
             ps.setString(3, song.getAlbum());
             ps.setString(4, song.getGenre());
             ps.setInt(5, song.getDuration());
             ps.setDate(6, Date.valueOf(song.getReleaseDate()));
-
             ps.executeUpdate();
-            System.out.println("Added: " + song.getName());
         } catch (SQLException e) {
-            System.out.println("Error adding song: " + e.getMessage());
+            throw new DatabaseOperationException("Error inserting song", e);
         }
     }
 
-    
-    public List<String> getAllSongs() {
-        List<String> songs = new ArrayList<>();
-        String sql = "SELECT id, name, artist, genre, duration FROM songs ORDER BY id";
-
+    public List<SongBase> getAll() throws DatabaseOperationException {
+        List<SongBase> songs = new ArrayList<>();
+        String sql = "SELECT * FROM songs";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
-
             while (rs.next()) {
-                String song = rs.getInt("id") + ". "
-                        + rs.getString("name") + " by " + rs.getString("artist")
-                        + " (" + rs.getString("genre") + ", " + rs.getInt("duration") + "s)";
+                SongBase song = new model.MetalSong(
+                        rs.getInt("id"),
+                        rs.getString("name"),
+                        rs.getString("artist"),
+                        rs.getString("album"),
+                        rs.getString("genre"),
+                        rs.getInt("duration"),
+                        rs.getString("release_date"),
+                        true, 120, true
+                );
                 songs.add(song);
             }
-
         } catch (SQLException e) {
-            System.out.println("Error reading songs: " + e.getMessage());
+            throw new DatabaseOperationException("Error fetching songs", e);
         }
         return songs;
     }
 
-    
-    public String getSongById(int id) {
-        String sql = "SELECT * FROM songs WHERE id = ?";
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setInt(1, id);
-            ResultSet rs = ps.executeQuery();
-
-            if (rs.next()) {
-                return rs.getInt("id") + ". " + rs.getString("name")
-                        + " by " + rs.getString("artist") + " (" + rs.getString("genre") + ")";
-            } else {
-                return "Song not found (id=" + id + ")";
-            }
-        } catch (SQLException e) {
-            return "    Error fetching song: " + e.getMessage();
-        }
-    }
-
-    public void updateSong(int id, String newName, int newDuration) {
-        String sql = "UPDATE songs SET name = ?, duration = ? WHERE id = ?";
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, newName);
-            ps.setInt(2, newDuration);
-            ps.setInt(3, id);
-
-            int rows = ps.executeUpdate();
-            if (rows > 0) {
-                System.out.println("Updated song ID " + id + " to: " + newName + " (" + newDuration + "s)");
-            } else {
-                System.out.println("Song not found (id=" + id + ")");
-            }
-        } catch (SQLException e) {
-            System.out.println("Error updating song: " + e.getMessage());
-        }
-    }
-
-    
-    public void deleteSong(int id) {
+    public void delete(int id) throws DatabaseOperationException {
         String sql = "DELETE FROM songs WHERE id = ?";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, id);
-            int rows = ps.executeUpdate();
-            if (rows > 0)
-                System.out.println("Deleted song (id=" + id + ")");
-            else
-                System.out.println("Song not found (id=" + id + ")");
+            ps.executeUpdate();
         } catch (SQLException e) {
-            System.out.println("Error deleting song: " + e.getMessage());
+            throw new DatabaseOperationException("Error deleting song", e);
+        }
+    }
+
+    public void update(int id, SongBase song) throws DatabaseOperationException {
+        String sql = "UPDATE songs SET name=?, artist=?, album=?, genre=?, duration=?, release_date=? WHERE id=?";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, song.getName());
+            ps.setString(2, song.getArtist());
+            ps.setString(3, song.getAlbum());
+            ps.setString(4, song.getGenre());
+            ps.setInt(5, song.getDuration());
+            ps.setDate(6, Date.valueOf(song.getReleaseDate()));
+            ps.setInt(7, id);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            throw new DatabaseOperationException("Error updating song", e);
         }
     }
 }

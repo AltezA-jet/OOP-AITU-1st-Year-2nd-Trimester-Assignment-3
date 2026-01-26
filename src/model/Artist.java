@@ -1,6 +1,6 @@
 package model;
 
-import model.Validatable;
+// import model.Validatable;
 
 public class Artist implements Validatable {
     private int id;

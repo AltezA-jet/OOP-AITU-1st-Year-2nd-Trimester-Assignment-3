@@ -23,7 +23,7 @@ public abstract class SongBase implements Playable, Validatable{
     public abstract String getGenreType();
     @Override
     public void play() {
-        System.out.println("▶️ Now playing: " + name + " by " + artist);
+        System.out.println(" Now playing: " + name + " by " + artist);
         MusicPlay(); 
     }
 

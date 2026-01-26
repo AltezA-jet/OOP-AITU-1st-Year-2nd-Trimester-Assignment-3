@@ -3,36 +3,48 @@ package service;
 import model.SongBase;
 import repository.SongRepository;
 import exception.*;
-
+import java.sql.*;
+import utils.DatabaseConnection;
 import java.util.List;
 
 public class SongService {
 
-    private final SongRepository songRepo = new SongRepository();
+    private final SongRepository repo = new SongRepository();
 
-    
-    public void addSong(SongBase song) throws InvalidInputException, DatabaseOperationException {
-        if (!song.isValid()) {
-            throw new InvalidInputException("Invalid song data");
-        }
-        songRepo.addSong(song);
+    public void createSong(SongBase song) throws InvalidInputException, DuplicateResourceException, DatabaseOperationException {
+        if (song == null || !song.isValid()) throw new InvalidInputException("Invalid song data");
+
+        if (existsByName(song.getName(), song.getArtist()))
+            throw new DuplicateResourceException("Song already exists");
+
+        repo.insert(song);
     }
 
-    
-    public List<String> getAllSongs() throws DatabaseOperationException {
-        return songRepo.getAllSongs();
+    public List<SongBase> getAllSongs() throws DatabaseOperationException {
+        return repo.getAll();
     }
 
-    
-    public void updateSong(int id, String newName, int newDuration) throws InvalidInputException, DatabaseOperationException {
-        if (newName == null || newName.trim().isEmpty() || newDuration <= 0) {
-            throw new InvalidInputException("Invalid input for update");
-        }
-        songRepo.updateSong(id, newName, newDuration);
+    public void updateSong(int id, SongBase song) throws InvalidInputException, DatabaseOperationException {
+        if (song == null || !song.isValid()) throw new InvalidInputException("Invalid song data");
+        repo.update(id, song);
     }
 
-    
     public void deleteSong(int id) throws DatabaseOperationException {
-        songRepo.deleteSong(id);
+        repo.delete(id);
     }
+
+    private boolean existsByName(String name, String artist) throws DatabaseOperationException {
+        String sql = "SELECT COUNT(*) FROM songs WHERE name = ? AND artist = ?";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, name);
+            ps.setString(2, artist);
+            ResultSet rs = ps.executeQuery();
+            rs.next();
+            return rs.getInt(1) > 0;
+        } catch (SQLException e) {
+            throw new DatabaseOperationException("Error checking duplicates", e);
+        }
+    }
+    
 }
