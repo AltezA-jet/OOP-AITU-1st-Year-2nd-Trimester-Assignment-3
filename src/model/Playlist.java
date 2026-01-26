@@ -2,60 +2,54 @@ package model;
 
 import java.util.ArrayList;
 import java.util.List;
-public class Playlist {
+
+public class Playlist implements Validatable, Playable {
     private int id;
     private String name;
     private List<SongBase> songs;
-    public int getid(){
-        return id;
-    }
 
     public Playlist(int id, String name) {
         this.id = id;
         this.name = name;
         this.songs = new ArrayList<>();
     }
+
+    public int getId() { return id; }
+    public String getName() { return name; }
+    public List<SongBase> getSongs() { return songs; }
+
     public void addSong(SongBase song) {
-        if (songs.contains(song)) {
-            System.out.println(" This song is already in the playlist.");
-            return;
+        if (song == null) throw new IllegalArgumentException("Cannot add null song");
+        if (!songs.contains(song)) {
+            songs.add(song);
+            System.out.println("Added: " + song.getName());
+        } else {
+            System.out.println("Song already in playlist");
         }
-        songs.add(song);
-        System.out.println(" Added: " + song.getName());
     }
+
     public void removeSong(SongBase song) {
         songs.remove(song);
-        System.out.println("Removed: " + song.getName());
     }
 
     public void showPlaylist() {
-        System.out.println("\n Playlist: " + name);
+        System.out.println("\nPlaylist: " + name);
+        if (songs.isEmpty()) System.out.println("No songs yet");
+        else for (SongBase s : songs) s.showInfo();
+    }
+
+    @Override
+    public boolean isValid() {
+        return name != null && !name.trim().isEmpty();
+    }
+
+    @Override
+    public void play() {
         if (songs.isEmpty()) {
-            System.out.println("No songs in this playlist yet.");
+            System.out.println("No songs to play in playlist: " + name);
         } else {
-            for (SongBase song : songs) {
-                song.showInfo();
-            }
+            System.out.println(" Playing playlist: " + name);
+            for (SongBase s : songs) s.play();
         }
     }
-
-    
-    public String getName() {
-        return name;
-    }
-
-    public List<SongBase> getSongs() {
-        return songs;
-    }
-    public void play() {
-    if (songs.isEmpty()) {
-        System.out.println("No songs to play.");
-        return;
-    }
-    System.out.println("Playing playlist: " + name);
-    for (SongBase song : songs) {
-        System.out.println("Now playing: " + song.getName());
-    }
-}
-
 }
